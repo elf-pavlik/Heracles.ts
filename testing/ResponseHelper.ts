@@ -15,11 +15,11 @@ function returnResponse(url: string, body, headers: any = {}, status: number = 2
         headers["Content-Type"] = "application/ld+json";
     }
 
-    let result = new Response(
+    const result = new Response(
         JSON.stringify(body),
         {
-            status: status,
-            headers: headers
+            status,
+            headers,
         });
     Object.defineProperty(result, "url", { value: url });
     return result;

@@ -9,7 +9,7 @@ export interface IHypermediaProcessor
      * Gets supported media types.
      * @returns {Array<string>}
      */
-    supportedMediaTypes: Array<string>;
+    supportedMediaTypes: string[];
 
     /**
      * Parses a given raw response.

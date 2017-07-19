@@ -1,7 +1,7 @@
 import HydraClient from "../../HydraClient";
+import {hydra} from "../../namespaces";
 import {IHypermediaProcessor} from "../IHypermediaProcessor";
 import {IWebResource} from "../IWebResource";
-import {hydra} from "../../namespaces";
 const jsonLd = require("jsonld").promises;
 const context = require("./context.json");
 
@@ -15,14 +15,14 @@ export default class JsonLdHypermediaProcessor implements IHypermediaProcessor
         HydraClient.registerHypermediaProcessor(new JsonLdHypermediaProcessor());
     }
 
-    public get supportedMediaTypes(): Array<string>
+    public get supportedMediaTypes(): string[]
     {
         return JsonLdHypermediaProcessor._mediaTypes;
     }
 
     public async process(response: Response, removeFromPayload: boolean = false): Promise<IWebResource>
     {
-        let payload = await response.json();
+        const payload = await response.json();
         let hypermedia: any = null;
         let result: any = payload;
         if (!removeFromPayload)
@@ -42,7 +42,7 @@ export default class JsonLdHypermediaProcessor implements IHypermediaProcessor
         return result;
     }
 
-    private static removeReferencesFrom(result: Array<any>): any
+    private static removeReferencesFrom(result: any[]): any
     {
         for (let index = result.length - 1; index >= 0; index--)
         {
@@ -60,7 +60,7 @@ export default class JsonLdHypermediaProcessor implements IHypermediaProcessor
         return "_:bnode" + (++JsonLdHypermediaProcessor._id);
     }
 
-    private static processHypermedia(payload: any, result: Array<any> & { [key: string]: any }, removeFromPayload: boolean = false): any
+    private static processHypermedia(payload: any, result: any[] & { [key: string]: any }, removeFromPayload: boolean = false): any
     {
         if (payload instanceof Array)
         {
@@ -75,13 +75,13 @@ export default class JsonLdHypermediaProcessor implements IHypermediaProcessor
         return JsonLdHypermediaProcessor.processResource(payload, result, removeFromPayload);
     }
 
-    private static processArray(payload: any, result: Array<any> & { [key: string]: any }, removeFromPayload: boolean = false)
+    private static processArray(payload: any, result: any[] & { [key: string]: any }, removeFromPayload: boolean = false)
     {
-        let toBeRemoved = new Array<any>();
-        for (let resource of payload)
+        const toBeRemoved = new Array<any>();
+        for (const resource of payload)
         {
-            if (!resource["@type"] || !!resource["@type"].find(item => item == hydra.EntryPoint) ||
-                !resource["@type"].every(item => item.indexOf(hydra.namespace) === 0))
+            if (!resource["@type"] || !!resource["@type"].find((item) => item == hydra.EntryPoint) ||
+                !resource["@type"].every((item) => item.indexOf(hydra.namespace) === 0))
             {
                 JsonLdHypermediaProcessor.processHypermedia(resource, result, removeFromPayload);
                 continue;
@@ -95,11 +95,11 @@ export default class JsonLdHypermediaProcessor implements IHypermediaProcessor
             }
         }
 
-        toBeRemoved.forEach(item => payload.splice(payload.indexOf(item), 1));
+        toBeRemoved.forEach((item) => payload.splice(payload.indexOf(item), 1));
         return result;
     }
 
-    private static processResource(resource: any, result: Array<any> & { [key: string]: any }, removeFromPayload: boolean): any
+    private static processResource(resource: any, result: any[] & { [key: string]: any }, removeFromPayload: boolean): any
     {
         let targetResource;
         if ((resource["@id"]) && (targetResource = result[resource["@id"]]))
@@ -114,7 +114,7 @@ export default class JsonLdHypermediaProcessor implements IHypermediaProcessor
             result.push(targetResource);
         }
 
-        for (let property of Object.keys(resource).filter(property => property.charAt(0) !== "@"))
+        for (const property of Object.keys(resource).filter((property) => property.charAt(0) !== "@"))
         {
             if (property.indexOf(hydra.namespace) === 0)
             {

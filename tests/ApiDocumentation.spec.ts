@@ -1,14 +1,14 @@
 import * as sinon from "sinon";
+import ApiDocumentation from "../src/ApiDocumentation";
 import {run} from "../testing/AsyncHelper";
 import {returnOk} from "../testing/ResponseHelper";
-import ApiDocumentation from "../src/ApiDocumentation";
 
 describe("Given an instance of the ApiDocumentation class", function() {
     beforeEach(function() {
         this.client = { getResource: sinon.stub() };
-        let setup = {
+        const setup = {
             client: { value: this.client },
-            entryPoint: { value: "http://temp.uri/api" }
+            entryPoint: { value: "http://temp.uri/api" },
         };
         this.apiDocumentation = Object.create(ApiDocumentation.prototype, setup);
     });

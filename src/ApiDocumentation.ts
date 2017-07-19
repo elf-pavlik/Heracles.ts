@@ -1,9 +1,9 @@
 import {IApiDocumentation} from "./DataModel/IApiDocumentation";
-import {IWebResource} from "./DataModel/IWebResource";
 import {IClass} from "./DataModel/IClass";
 import {IOperation} from "./DataModel/IOperation";
-import HydraClient from "./HydraClient";
 import {IResource} from "./DataModel/IResource";
+import {IWebResource} from "./DataModel/IWebResource";
+import HydraClient from "./HydraClient";
 
 export default class ApiDocumentation implements IApiDocumentation
 {
@@ -11,9 +11,9 @@ export default class ApiDocumentation implements IApiDocumentation
 
     public description?: string;
 
-    public supportedClasses: Array<IClass>;
+    public supportedClasses: IClass[];
 
-    public supportedOperations: Array<IOperation>;
+    public supportedOperations: IOperation[];
 
     public entryPoint: string | IResource;
 

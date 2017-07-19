@@ -22,11 +22,11 @@ describe("Having a Hydra client", function() {
             });
 
             it("should obtain a schema:CreateAction operation", function() {
-                expect(this.entryPoint.hypermedia.find(item => item.isA === "Operation")).not.toBeNull();
+                expect(this.entryPoint.hypermedia.find((item) => item.isA === "Operation")).not.toBeNull();
             });
 
             it("should obtain a collection of events", function() {
-                expect(this.entryPoint.hypermedia.find(item => item.iri.match("\/api\/events$") && item.isA === "Colletion"))
+                expect(this.entryPoint.hypermedia.find((item) => item.iri.match("\/api\/events$") && item.isA === "Colletion"))
                     .not.toBeNull();
             });
         });

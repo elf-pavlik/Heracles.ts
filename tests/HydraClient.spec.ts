@@ -1,20 +1,20 @@
 import * as sinon from "sinon";
-import {run} from "../testing/AsyncHelper";
-import {returnOk, returnNotFound} from "../testing/ResponseHelper";
-import {hydra} from "../src/namespaces";
-import HydraClient from "../src/HydraClient";
 import ApiDocumentation from "../src/ApiDocumentation";
+import HydraClient from "../src/HydraClient";
+import {hydra} from "../src/namespaces";
+import {run} from "../testing/AsyncHelper";
+import {returnNotFound, returnOk} from "../testing/ResponseHelper";
 
 describe("Given an instance of the HydraClient class", function() {
     beforeEach(function() {
         this.baseUrl = "http://temp.uri/";
         this.hypermediaProcessor = {
             supportedMediaTypes: ["application/ld+json"],
-            process: sinon.stub()
+            process: sinon.stub(),
         };
         this.client = new HydraClient(true);
-        this.hypermediaProcessors = (<any>HydraClient)._hypermediaProcessors;
-        (<any>HydraClient)._hypermediaProcessors = [];
+        this.hypermediaProcessors = (HydraClient as any)._hypermediaProcessors;
+        (HydraClient as any)._hypermediaProcessors = [];
         HydraClient.registerHypermediaProcessor(this.hypermediaProcessor);
         this.fetch = sinon.stub(window, "fetch");
     });
@@ -59,7 +59,7 @@ describe("Given an instance of the HydraClient class", function() {
 
         describe("which is not provided within the LINK header", function() {
             beforeEach(function() {
-                this.urlResponse = returnOk(this.baseUrl, {}, { "Link": `<${this.baseUrl}api/documentation>; rel="next"` });
+                this.urlResponse = returnOk(this.baseUrl, {}, { Link: `<${this.baseUrl}api/documentation>; rel="next"` });
                 this.fetch.withArgs(this.baseUrl).returns(Promise.resolve(this.urlResponse));
             });
 
@@ -71,7 +71,7 @@ describe("Given an instance of the HydraClient class", function() {
 
         describe("from a valid site", function() {
             beforeEach(function() {
-                this.urlResponse = returnOk(this.baseUrl, {}, { "Link": `<${this.baseUrl}api/documentation>; rel="${hydra.apiDocumentation}"` });
+                this.urlResponse = returnOk(this.baseUrl, {}, { Link: `<${this.baseUrl}api/documentation>; rel="${hydra.apiDocumentation}"` });
                 this.fetch.withArgs(this.baseUrl).returns(Promise.resolve(this.urlResponse));
             });
 
@@ -89,7 +89,7 @@ describe("Given an instance of the HydraClient class", function() {
 
             describe("and that documentation is provided in an unsupported format", function() {
                 beforeEach(function() {
-                    let apiDocumentationUrl = `${this.baseUrl}api/documentation`;
+                    const apiDocumentationUrl = `${this.baseUrl}api/documentation`;
                     this.apiDocumentationResponse = returnOk(apiDocumentationUrl, {}, { "Content-Type": "text/turtle" });
                     this.fetch.withArgs(apiDocumentationUrl).returns(this.apiDocumentationResponse);
                 });
@@ -115,7 +115,7 @@ describe("Given an instance of the HydraClient class", function() {
 
             describe("which is provided correctly", function() {
                 beforeEach(function() {
-                    let apiDocumentationUrl = `${this.baseUrl}api/documentation`;
+                    const apiDocumentationUrl = `${this.baseUrl}api/documentation`;
                     this.apiDocumentation = { entryPoint: `${this.baseUrl}api` };
                     this.data = [this.apiDocumentation];
                     this.apiDocumentationResponse = returnOk(apiDocumentationUrl, this.data);
@@ -138,11 +138,11 @@ describe("Given an instance of the HydraClient class", function() {
                 it("should process API documentation with a hypermedia processor", run(async function() {
                     await this.client.getApiDocumentation(this.baseUrl);
 
-                    (<any>expect(this.hypermediaProcessor.process)).toHaveBeenCalledWith(this.apiDocumentationResponse);
+                    (expect(this.hypermediaProcessor.process) as any).toHaveBeenCalledWith(this.apiDocumentationResponse);
                 }));
 
                 it("should return a correct ApiDocumentation instance", run(async function() {
-                    let result = await this.client.getApiDocumentation(this.baseUrl);
+                    const result = await this.client.getApiDocumentation(this.baseUrl);
 
                     expect(result).toEqual(jasmine.any(ApiDocumentation));
                     expect(result.client).toBe(this.client);
@@ -202,7 +202,7 @@ describe("Given an instance of the HydraClient class", function() {
             }));
 
             it("should return a correct result", run(async function() {
-                let result = await this.client.getResource(this.resourceUrl);
+                const result = await this.client.getResource(this.resourceUrl);
 
                 expect(result).toBe(this.resource);
             }));
@@ -210,7 +210,7 @@ describe("Given an instance of the HydraClient class", function() {
     });
 
     afterEach(function() {
-        (<any>HydraClient)._hypermediaProcessors = this.hypermediaProcessors;
+        (HydraClient as any)._hypermediaProcessors = this.hypermediaProcessors;
         this.fetch.restore();
     });
 });

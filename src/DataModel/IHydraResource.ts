@@ -8,10 +8,10 @@ export interface IHydraResource extends IResource
     /**
      * @readonly Gets classes a given resource is of.
      */
-    readonly isA: Array<string>
+    readonly isA: string[];
 
     /**
      * @readonly Gets operations that can be performed on that resource.
      */
-    readonly operations: Array<IOperation>;
+    readonly operations: IOperation[];
 }

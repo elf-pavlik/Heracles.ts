@@ -1,9 +1,9 @@
-import {hydra} from "./namespaces";
-import {IHypermediaProcessor} from "./DataModel/IHypermediaProcessor";
-import {IApiDocumentation} from "./DataModel/IApiDocumentation";
-import {IWebResource} from "./DataModel/IWebResource";
 import ApiDocumentation from "./ApiDocumentation";
+import {IApiDocumentation} from "./DataModel/IApiDocumentation";
+import {IHypermediaProcessor} from "./DataModel/IHypermediaProcessor";
 import {IResource} from "./DataModel/IResource";
+import {IWebResource} from "./DataModel/IWebResource";
+import {hydra} from "./namespaces";
 const jsonld = require("jsonld");
 require("isomorphic-fetch");
 
@@ -55,8 +55,8 @@ export default class HydraClient
      */
     public getHypermediaProcessor(response: Response): IHypermediaProcessor
     {
-        return HydraClient._hypermediaProcessors.find(provider =>
-            !!provider.supportedMediaTypes.find(mediaType => response.headers.get("Content-Type").indexOf(mediaType) === 0));
+        return HydraClient._hypermediaProcessors.find((provider) =>
+            !!provider.supportedMediaTypes.find((mediaType) => response.headers.get("Content-Type").indexOf(mediaType) === 0));
     }
 
     /**
@@ -66,11 +66,11 @@ export default class HydraClient
      */
     public async getApiDocumentation(urlOrResource: string | IResource): Promise<IApiDocumentation>
     {
-        let url = HydraClient.getUrl(urlOrResource);
-        let apiDocumentationUrl = await this.getApiDocumentationUrl(url);
-        let resource = await this.getResource(apiDocumentationUrl);
-        let apiDocumentation = <IApiDocumentation>resource
-            .hypermedia.find(hypermediaControl => (<any>hypermediaControl).entryPoint);
+        const url = HydraClient.getUrl(urlOrResource);
+        const apiDocumentationUrl = await this.getApiDocumentationUrl(url);
+        const resource = await this.getResource(apiDocumentationUrl);
+        const apiDocumentation = resource
+            .hypermedia.find((hypermediaControl) => (hypermediaControl as any).entryPoint) as IApiDocumentation;
         if (!apiDocumentation)
         {
             throw new Error(HydraClient.noEntryPointDefined);
@@ -87,14 +87,14 @@ export default class HydraClient
      */
     public async getResource(urlOrResource: string | IResource): Promise<IWebResource>
     {
-        let url = HydraClient.getUrl(urlOrResource);
-        let response = await fetch(url);
+        const url = HydraClient.getUrl(urlOrResource);
+        const response = await fetch(url);
         if (response.status !== 200)
         {
             throw new Error(HydraClient.invalidResponse + response.status);
         }
 
-        let hypermediaProcessor = this.getHypermediaProcessor(response);
+        const hypermediaProcessor = this.getHypermediaProcessor(response);
         if (!hypermediaProcessor)
         {
             throw new Error(HydraClient.responseFormatNotSupported);
@@ -105,22 +105,22 @@ export default class HydraClient
 
     private async getApiDocumentationUrl(url: string): Promise<string>
     {
-        let response = await fetch(url);
+        const response = await fetch(url);
         if (response.status !== 200)
         {
             throw new Error(HydraClient.invalidResponse + response.status);
         }
 
-        let link = response.headers.get("Link");
+        const link = response.headers.get("Link");
         if (!link)
         {
-            throw new Error(HydraClient.apiDocumentationNotProvided)
+            throw new Error(HydraClient.apiDocumentationNotProvided);
         }
 
-        let result = link.match(`<([^>]+)>; rel="${hydra.apiDocumentation}"`);
+        const result = link.match(`<([^>]+)>; rel="${hydra.apiDocumentation}"`);
         if (!result)
         {
-            throw new Error(HydraClient.apiDocumentationNotProvided)
+            throw new Error(HydraClient.apiDocumentationNotProvided);
         }
 
         return (!result[1].match(/^[a-z][a-z0-9+\-.]*:/) ? jsonld.prependBase(url.match(/^[a-z][a-z0-9+\-.]*:\/\/[^/]+/)[0], result[1]) : result[1]);
@@ -128,7 +128,7 @@ export default class HydraClient
 
     private static getUrl(urlOrResource: string | IResource): string
     {
-        let url = (typeof(urlOrResource) === "object" ? urlOrResource.iri : urlOrResource);
+        const url = (typeof(urlOrResource) === "object" ? urlOrResource.iri : urlOrResource);
         if (!!!url)
         {
             throw new Error(HydraClient.noUrlProvided);
@@ -139,15 +139,15 @@ export default class HydraClient
 
     private static convertToPropertyDescriptorMap(instance: any): PropertyDescriptorMap
     {
-        let properties = {};
-        for (let property of Object.keys(instance))
+        const properties = {};
+        for (const property of Object.keys(instance))
         {
-            let isFunction = typeof(instance[property] === "function");
+            const isFunction = typeof(instance[property] === "function");
             properties[property] = {
                 value: instance[property],
                 writable: !isFunction,
                 enumerable: !isFunction,
-                configurable: false
+                configurable: false,
             };
         }
 

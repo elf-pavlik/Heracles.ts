@@ -8,5 +8,5 @@ export interface IWebResource extends Object
     /**
      * @readonly Gets a collection of hypermedia controls.
      */
-    readonly hypermedia: Array<IHypermedia>;
+    readonly hypermedia: IHypermedia[];
 }

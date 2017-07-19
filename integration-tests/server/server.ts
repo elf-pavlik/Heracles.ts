@@ -15,8 +15,8 @@ server.disable("etag");
 
 server.get("/*", (request, response) =>
     {
-        let path = (request.path === "/" ? "/root" : request.path);
-        let body = loadBody(path);
+        const path = (request.path === "/" ? "/root" : request.path);
+        const body = loadBody(path);
         if ((setHeaders(path, response, !!body)) || (body))
         {
             response.status(200).send(body);
@@ -33,17 +33,17 @@ function setHeaders(path: string, response: express.Response, isJsonLd: boolean)
     response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Methods", "GET");
     response.header("Access-Control-Expose-Headers", "Link, Content-Type");
-    let headersFile = path + ".headers";
+    const headersFile = path + ".headers";
     if (!fs.existsSync(__dirname + headersFile))
     {
         return false;
     }
 
-    require(__dirname + headersFile).replace("\r", "").split("\n").filter(header => header.length > 0)
-        .forEach(header =>
+    require(__dirname + headersFile).replace("\r", "").split("\n").filter((header) => header.length > 0)
+        .forEach((header) =>
         {
-            let name = header.split(":")[0];
-            let value = header.substr(name.length + 1).trim();
+            const name = header.split(":")[0];
+            const value = header.substr(name.length + 1).trim();
             response.header(name, value);
         });
     return true;
@@ -52,10 +52,10 @@ function setHeaders(path: string, response: express.Response, isJsonLd: boolean)
 function loadBody(path: string)
 {
     let body = null;
-    let bodyFile = path + (path.indexOf(".") === -1 ? ".jsonld" : "");
+    const bodyFile = path + (path.indexOf(".") === -1 ? ".jsonld" : "");
     if (fs.existsSync(__dirname + bodyFile))
     {
-        body = require(__dirname + bodyFile)
+        body = require(__dirname + bodyFile);
     }
 
     return body;

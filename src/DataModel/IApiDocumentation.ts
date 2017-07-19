@@ -1,7 +1,7 @@
-import {IWebResource} from "./IWebResource";
 import {IClass} from "./IClass";
 import {IHypermedia} from "./IHypermedia";
 import {IResource} from "./IResource";
+import {IWebResource} from "./IWebResource";
 
 /**
  * @interface Represents an abstract API documentation.
@@ -21,7 +21,7 @@ export interface IApiDocumentation extends IHypermedia
     /**
      * @readonly Gets the supported classes by this API.
      */
-    readonly supportedClasses: Array<IClass>;
+    readonly supportedClasses: IClass[];
 
     /**
      * @readonly Gets the Url of the entry point of the API.
