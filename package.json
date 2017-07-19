@@ -8,6 +8,7 @@
     "live-test": "node node_modules/concurrently/src/main.js \"npm run serve\" \"npm run test-watch\"",
     "serve": "ts-node integration-tests/server/server.ts",
     "tslint": "node_modules/.bin/tslint -c tslint.json -p tsconfig.json --type-check 'src/**/*.ts'",
+    "tslint-fix": "node_modules/.bin/tslint -c tslint.json -p tsconfig.json --type-check 'src/**/*.ts' --fix",
     "docs-html": "node node_modules/typedoc/bin/typedoc --excludeExternals --tsconfig tsconfig.docs.json --gitRevision master --out docs-html src",
     "docs-md": "node node_modules/typedoc/bin/typedoc --theme markdown --mode file --excludeExternals --tsconfig tsconfig.docs.json --gitRevision master --out docs src"
   },
